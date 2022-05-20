@@ -1,6 +1,6 @@
 @setvar h1 {
     background-col: #00000000;
-    foreground-col: #abcdef;
+    foreground-col: $crimson; #abcdef;
     border-col: #00000000;
     rect: (0,10,1,60);
     parent: $screen;
@@ -11,7 +11,7 @@
 };
 @setvar h2 {
     background-col: #00000000;
-    foreground-col: #ff5555;
+    foreground-col: $crimson; #ff5555;
     border-col: #00000000;
     rect: (0,70,1,40);
     parent: $screen;

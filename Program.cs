@@ -10,7 +10,8 @@ drawing each frame:
 40000: ~9
 */
 Raylib.SetExitKey(0);
-ScriptEngine.ParseStyle(File.ReadAllLines("assets/test.txt"));
+Raylib.SetTargetFPS(60);
+ScriptEngine.Start("assets/test.jgui");
 
 double Evaluate(string expression)
 {
@@ -29,7 +30,7 @@ while (!Raylib.WindowShouldClose())
 {
     Raylib.BeginDrawing();
     Raylib.ClearBackground(ScriptEngine.BGCol);
-    ScriptEngine.ParseStyle(File.ReadAllLines("assets/test.txt"));
+    ScriptEngine.ParseStyle();
     foreach (var item in ScriptEngine.Styles)
     {
         Draw.GUIRect(item.Key);

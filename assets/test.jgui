@@ -1,5 +1,5 @@
-@setvar bg #ffffff00;
-@setvar fg #ffffff;
+@setvar bg $clear;
+@setvar fg $crimson;
 @setvar menubarHeight 25;
 @setvar screen (0,$menubarHeight,sw,sh);
 @setvar bounds (0,0,75,75);
@@ -10,12 +10,12 @@
     rect: $bounds;
     parent: $screen;
     text: "text";
-    font-size: 100-40*2;
+    font-size: 20;
     text-align: mc;
 };
 
-@import h;
-@import p;
+@import /imports/h.jgui;
+@import /imports/p.jgui;
 
 @setbackground #181818;
 
