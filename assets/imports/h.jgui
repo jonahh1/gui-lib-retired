@@ -1,6 +1,6 @@
 @setvar h1 {
     background-col: #00000000;
-    foreground-col: $crimson; #abcdef;
+    foreground-col: #abcdef;
     border-col: #00000000;
     rect: (0,10,1,60);
     parent: $screen;
@@ -8,10 +8,11 @@
     font-size: 60;
     text-align: mc;
     anchor: tc;
+    font: bad;
 };
 @setvar h2 {
     background-col: #00000000;
-    foreground-col: $crimson; #ff5555;
+    foreground-col: #ff5555;
     border-col: #00000000;
     rect: (0,70,1,40);
     parent: $screen;
@@ -19,4 +20,5 @@
     font-size: 40;
     text-align: mc;
     anchor: tc;
+    font: ubuntu-mono;
 };

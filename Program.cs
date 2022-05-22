@@ -1,6 +1,5 @@
 ﻿Raylib.SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
 Raylib.InitWindow(800, 450, "UI Lib");
-//NOTE: this is BY FAR the thing i am most proud of.
 /*
 drawing each frame:
 4:     ~1400
@@ -11,7 +10,7 @@ drawing each frame:
 */
 Raylib.SetExitKey(0);
 Raylib.SetTargetFPS(60);
-ScriptEngine.Start("assets/test.jgui");
+ScriptEngine.Start("assets/test.jgui", new string[]{"assets/bad-font.ttf", "assets/test-font.ttf"});
 
 double Evaluate(string expression)
 {
@@ -39,3 +38,4 @@ while (!Raylib.WindowShouldClose())
     Raylib.EndDrawing();
 }
 Raylib.CloseWindow();
+foreach (Font f in ScriptEngine.Fonts) Raylib.UnloadFont(f);

@@ -15,7 +15,7 @@ namespace GUI_Lib
         public AnchorType textAlign;
         public float fontSize;
         public float fontSpacing; public void SetFontSpacing(float v) {fontSpacing = v; Console.WriteLine(fontSpacing);}
-        //public Font font;
+        public Font font;
 
         public StyleContainer()
         {
@@ -33,7 +33,7 @@ namespace GUI_Lib
             textAlign = AnchorType.middle_center;
             fontSize = 20;
             fontSpacing = 1;
-            //font = Raylib.LoadFont("assets");
+            font = Raylib.GetFontDefault();
 
         }
     }
@@ -42,10 +42,31 @@ namespace GUI_Lib
         
         public static Dictionary<string, string> Variables = new Dictionary<string, string>();
         public static Dictionary<string, StyleContainer> Styles = new Dictionary<string, StyleContainer>();
+        public static List<Font> Fonts = new List<Font>();
         public static Color BGCol = Color.WHITE;
         static char cmdPrefix = '@';
         static char varPrefix = '$';
         static string spaceMatch = @"(""[^""\\]*(?:\\.[^""\\]*)*"")|\s+";
+
+        public static string Path = "";
+        public static List<string> FromatedCode = new List<string>();
+        public static void Start(string path, string[] fontPaths)
+        {
+            Styles.Clear();
+            Variables.Clear();
+            /* fonts */
+            for (int i = 0; i < fontPaths.Length; i++)
+            {
+                Fonts.Add(Raylib.LoadFont(fontPaths[i]));
+                Raylib.SetTextureFilter(Fonts[i].texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
+            }
+            // formating the code into one statement per line
+            Path = path;
+            string colapsedCode = string.Join("",File.ReadAllLines(path));
+            FromatedCode = formatCode(colapsedCode).ToList();
+            ParseStyle();
+
+        }
 
         public static void AddCols()
         {
@@ -205,16 +226,6 @@ namespace GUI_Lib
 
             Variables = nv;
         }
-        public static float Eval(string expression)
-        {
-            return (float)(double)new System.Xml.XPath.XPathDocument
-            (new StringReader("<r/>")).CreateNavigator().Evaluate
-            (string.Format("number({0})", new
-            System.Text.RegularExpressions.Regex(@"([\+\-\*])")
-            .Replace(expression, " ${1} ")
-            .Replace("/", " div ")
-            .Replace("%", " mod ")));
-        }
         public static string GetVariable(string key)
         {
             var I = Variables;
@@ -233,18 +244,6 @@ namespace GUI_Lib
                         :Regex.Replace(l, spaceMatch, "$1")
                     ).Replace("^;", ";")
             ).ToArray();
-        }
-        public static string Path = "";
-        public static List<string> FromatedCode = new List<string>();
-        public static void Start(string path)
-        {
-            Styles.Clear();
-            Variables.Clear();
-            // formating the code into one statement per line
-            Path = path;
-            string colapsedCode = string.Join("",File.ReadAllLines(path));
-            FromatedCode = formatCode(colapsedCode).ToList();
-            ParseStyle();
         }
         public static void ParseStyle()
         {
@@ -315,7 +314,7 @@ namespace GUI_Lib
                         case "foreground-col": style.foregroundCol = GUITools.HexToRGB(v[1]); continue;
 
                         case "border-col":   style.borderCol   = GUITools.HexToRGB(v[1]); continue;
-                        case "border-width": style.borderWidth = Eval(v[1]);  continue;
+                        case "border-width": style.borderWidth = GUITools.Eval(v[1]);  continue;
 
                         case "rect":   style.rect   = GUITools.StringToRect(v[1]);   continue;
                         case "parent": style.parent = GUITools.StringToRect(v[1]);   continue;
@@ -323,13 +322,25 @@ namespace GUI_Lib
 
                         case "text":         style.text        = v[1].Replace("\"", "");        continue;
                         case "text-align":   style.textAlign   = GUITools.StringToAnchor(v[1]); continue;
-                        case "font-size":    style.fontSize    = Eval(v[1]);        continue;
-                        case "font-spacing": style.fontSpacing = Eval(v[1]);        continue;
+
+                        case "font":         style.font        = GetFont(v[1]);              continue;
+                        case "font-size":    style.fontSize    = GUITools.Eval(v[1]);        continue;
+                        case "font-spacing": style.fontSpacing = GUITools.Eval(v[1]);        continue;
                         //case "font":         style.font        = GUITools.StringToAnchor(v[1]); continue;
                         default: continue;
                     }
                 }
                 if (!Styles.ContainsKey(splitLine[0])) Styles.Add(splitLine[0], style);
+            }
+        }
+        public static Font GetFont(string f)
+        {
+            switch (f)
+            {
+                case "default": case "raylib": return Raylib.GetFontDefault();
+                case "bad": case "handwriting": return Fonts[0];
+                case "ubuntu-mono": return Fonts[1];
+                default: return Raylib.GetFontDefault();
             }
         }
     }

@@ -85,10 +85,20 @@ namespace GUI_Lib
                 string v = strValues[i];
                 if (v == "sw") v = Raylib.GetScreenWidth().ToString();
                 if (v == "sh") v = Raylib.GetScreenHeight().ToString();
-                values[i] = ScriptEngine.Eval(v);
+                values[i] = Eval(v);
             }
             if (values.Length!=4) return new Rectangle(10,10,100, 100);
             return new Rectangle(values[0],values[1],values[2],values[3]);
+        }
+        public static float Eval(string expression)
+        {
+            return (float)(double)new System.Xml.XPath.XPathDocument
+            (new StringReader("<r/>")).CreateNavigator().Evaluate
+            (string.Format("number({0})", new
+            System.Text.RegularExpressions.Regex(@"([\+\-\*])")
+            .Replace(expression, " ${1} ")
+            .Replace("/", " div ")
+            .Replace("%", " mod ")));
         }
 
         

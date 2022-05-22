@@ -19,3 +19,45 @@ X:\programing\visual studio code\ui-lib\obj\Debug\net6.0\refint\ui-lib.dll
 X:\programing\visual studio code\ui-lib\obj\Debug\net6.0\ui-lib.pdb
 X:\programing\visual studio code\ui-lib\obj\Debug\net6.0\ui-lib.genruntimeconfig.cache
 X:\programing\visual studio code\ui-lib\obj\Debug\net6.0\ref\ui-lib.dll
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\ui-lib.exe
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\ui-lib.deps.json
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\ui-lib.runtimeconfig.json
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\ui-lib.dll
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\ui-lib.pdb
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\Raylib-cs.dll
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\runtimes\linux-x64\native\libraylib.so
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\runtimes\osx-x64\native\libraylib.dylib
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\runtimes\win-x64\native\raylib.dll
+C:\Users\invisadmin\Desktop\python\gui-lib\bin\Debug\net6.0\runtimes\win-x86\native\raylib.dll
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ui-lib.csproj.AssemblyReference.cache
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ui-lib.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ui-lib.AssemblyInfoInputs.cache
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ui-lib.AssemblyInfo.cs
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ui-lib.csproj.CoreCompileInputs.cache
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ui-lib.csproj.CopyComplete
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ui-lib.dll
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\refint\ui-lib.dll
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ui-lib.pdb
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ui-lib.genruntimeconfig.cache
+C:\Users\invisadmin\Desktop\python\gui-lib\obj\Debug\net6.0\ref\ui-lib.dll
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\ui-lib.exe
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\ui-lib.deps.json
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\ui-lib.runtimeconfig.json
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\ui-lib.dll
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\ui-lib.pdb
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\Raylib-cs.dll
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\runtimes\linux-x64\native\libraylib.so
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\runtimes\osx-x64\native\libraylib.dylib
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\runtimes\win-x64\native\raylib.dll
+X:\programing\visual studio code\gui-lib\bin\Debug\net6.0\runtimes\win-x86\native\raylib.dll
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ui-lib.csproj.AssemblyReference.cache
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ui-lib.GeneratedMSBuildEditorConfig.editorconfig
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ui-lib.AssemblyInfoInputs.cache
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ui-lib.AssemblyInfo.cs
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ui-lib.csproj.CoreCompileInputs.cache
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ui-lib.csproj.CopyComplete
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ui-lib.dll
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\refint\ui-lib.dll
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ui-lib.pdb
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ui-lib.genruntimeconfig.cache
+X:\programing\visual studio code\gui-lib\obj\Debug\net6.0\ref\ui-lib.dll
