@@ -16,13 +16,13 @@ namespace GUI_Lib
             Raylib.DrawRectangleLinesEx(r, s, GUITools.HexToRGB(c));
         }
 
-        public static void Text(string text, float x, float y, Color c, float fontSize, float fontSpacing=0) {
-            Raylib.DrawTextEx(Raylib.GetFontDefault(), text, new Vector2(x, y), (int)fontSize, fontSpacing, c);
+        public static void Text(string text, float x, float y, Color c, Font font, float fontSize, float fontSpacing=0) {
+            Raylib.DrawTextEx(font, text, new Vector2(x, y), (int)fontSize, fontSpacing, c);
         }
-        public static void Text(string text, Rectangle r, AnchorType a, Color c, float fontSize, float fontSpacing=0) {
-            Vector2 textSize = Raylib.MeasureTextEx(Raylib.GetFontDefault(), text, fontSize, fontSpacing);
+        public static void Text(string text, Rectangle r, AnchorType a, Color c, Font font, float fontSize, float fontSpacing=0) {
+            Vector2 textSize = Raylib.MeasureTextEx(font, text, fontSize, fontSpacing);
             Rectangle rect = GUITools.ModRectFromParentAndAnchor(r, a, new Rectangle(0,0,textSize.X, textSize.Y));
-            Draw.Text(text, rect.x, rect.y, c, fontSize, fontSpacing);
+            Draw.Text(text, rect.x, rect.y, c, font, fontSize, fontSpacing);
         }
 
 
@@ -36,10 +36,10 @@ namespace GUI_Lib
 
             if (s.text != "")
             {
-                Vector2 textSize = Raylib.MeasureTextEx(Raylib.GetFontDefault(), s.text, s.fontSize, s.fontSpacing);
+                Vector2 textSize = Raylib.MeasureTextEx(s.font, s.text, s.fontSize, s.fontSpacing);
                 Rectangle rect = GUITools.ModRectFromParentAndAnchor(s.rect, s.textAlign, new Rectangle(0,0,textSize.X, textSize.Y));
                 rect = GUITools.AddRects(rect, GUITools.ModRectFromParentAndAnchor(s.parent, s.anchor, new Rectangle(0,0,s.rect.width,s.rect.height)));
-                Draw.Text(s.text, rect.x, rect.y, s.foregroundCol, s.fontSize, s.fontSpacing);
+                Draw.Text(s.text, rect.x, rect.y, s.foregroundCol, s.font, s.fontSize, s.fontSpacing);
             }
         }
         #endregion
