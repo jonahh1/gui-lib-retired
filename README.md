@@ -6,3 +6,4 @@ My goal for this project is to be able to make a web-like gui system but without
 - the ability to draw rects and text
 - constant variables
 - importing other styles
+- custom fonts
