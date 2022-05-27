@@ -1,0 +1,3 @@
+X:\programing\visual studio code\ui-lib\bin\Release\net6.0\win-x64\publish\ui-lib.pdb
+X:\programing\visual studio code\ui-lib\bin\Release\net6.0\win-x64\publish\raylib.dll
+X:\programing\visual studio code\ui-lib\bin\Release\net6.0\win-x64\publish\ui-lib.exe

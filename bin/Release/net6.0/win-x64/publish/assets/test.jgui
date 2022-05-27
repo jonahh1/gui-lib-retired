@@ -1,0 +1,49 @@
+@setvar bg $clear;
+@setvar fg $white;
+@setvar menubarHeight 25;
+@setvar screen (0,25,sw,sh-$menubarHeight);
+@setvar bounds (0,0,75,75);
+@setvar rect {
+    background-col: $bg;
+    foreground-col: $fg;
+    border-col: $fg;
+    rect: $bounds;
+    
+    parent: $screen;
+    text: "text";
+    font-size: 20;
+    font-spacing: 5;
+    text-align: bc;
+};
+
+@import /imports/h.jgui;
+@import /imports/p.jgui;
+
+@setbackground #181818;
+
+box {
+    $rect;
+    anchor: mc; 
+};
+box1 {
+    $rect;
+    rect: (0,0,40,40, (10,10,100,100), mc)
+    anchor: mc; 
+};
+menubar {
+    border-col: $bg;
+    background-col: #363636;
+    rect: (0,0,sw,$menubarHeight);
+    parent: (0,0,sw,sh);
+    anchor: tl; 
+};
+
+header1 {
+    $h1;
+};
+header2 {
+    $h2;
+};
+paragraph {
+    $p;
+};

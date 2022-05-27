@@ -1,43 +1,77 @@
+@importfont 64 assets/fira code/FiraCode-Bold.ttf;
+@importfont 32 assets/fira code/FiraCode-light.ttf;
+@importfont 32 assets/fira code/FiraCode-Medium.ttf;
+@importfont 16 assets/fira code/FiraCode-Regular.ttf;
+@importfont 32 assets/fira code/FiraCode-Retina.ttf;
+@importfont 32 assets/fira code/FiraCode-SemiBold.ttf;
+
+@importscript assets/imports/h.jgui;
+@importscript assets/imports/p.jgui;
+
+
+@setvar menubarHeight 25;
 @setvar bg $clear;
 @setvar fg $white;
-@setvar menubarHeight 25;
-@setvar screen (0,$menubarHeight,sw,sh);
-@setvar bounds (0,0,75,75);
+@setvar screen (0,25,sw,sh-$menubarHeight);
+@setvar bounds (0,0,200,75);
+@setvar defaultText {
+    font: firacode-regular;
+    font-size: 16;
+    font-spacing: 0;
+    text-align: mc;
+};
 @setvar rect {
     background-col: $bg;
     foreground-col: $fg;
     border-col: $fg;
-    rect: $bounds;
-    
+    border-width: 2;
     parent: $screen;
-    text: "text";
-    font-size: 20;
-    font-spacing: 5;
-    text-align: bc;
+    $defaultText;
 };
-
-@import /imports/h.jgui;
-@import /imports/p.jgui;
 
 @setbackground #181818;
 
 box {
     $rect;
-    anchor: mc; 
+    rect: (
+        0,
+        0,
+        128,
+        32
+    );
+    anchor: middle-centre;
+    text: "hello world";
 };
+
+h1 {
+    background-col: #00000000;
+    foreground-col: #abcdef;
+    border-col: #00000000;
+    rect: (0,10,1,60);
+    parent: $screen;
+    text: "heading1";
+    font-size: 60;
+    text-align: mc;
+    anchor: tc;
+    font: firacode-bold;
+};
+h2 {
+    background-col: #00000000;
+    foreground-col: #ff5555;
+    border-col: #00000000;
+    rect: (0,70,1,40);
+    parent: $screen;
+    text: "heading2";
+    font-size: 40;
+    text-align: mc;
+    anchor: tc;
+    font: firacode-bold;
+};
+
 menubar {
     border-col: $bg;
     background-col: #363636;
     rect: (0,0,sw,$menubarHeight);
     parent: (0,0,sw,sh);
     anchor: tl; 
-};
-header1 {
-    $h1;
-};
-header2 {
-    $h2;
-};
-paragraph {
-    $p;
 };

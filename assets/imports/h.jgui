@@ -8,7 +8,7 @@
     font-size: 60;
     text-align: mc;
     anchor: tc;
-    font: bad;
+    font: firacode-bold;
 };
 @setvar h2 {
     background-col: #00000000;
@@ -20,5 +20,17 @@
     font-size: 40;
     text-align: mc;
     anchor: tc;
-    font: ubuntu-mono;
+    font: firacode-light;
+};
+@setvar h3 {
+    background-col: #00000000;
+    foreground-col: #ff5555;
+    border-col: #00000000;
+    rect: (0,120,1,40);
+    parent: $screen;
+    text: "header2";
+    font-size: 30;
+    text-align: mc;
+    anchor: tc;
+    font: firacode-light;
 };

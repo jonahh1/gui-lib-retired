@@ -1,0 +1,3 @@
+X:\programing\visual studio code\ui-lib\bin\Release\net6.0\linux-x64\publish\ui-lib.pdb
+X:\programing\visual studio code\ui-lib\bin\Release\net6.0\linux-x64\publish\libraylib.so
+X:\programing\visual studio code\ui-lib\bin\Release\net6.0\linux-x64\publish\ui-lib

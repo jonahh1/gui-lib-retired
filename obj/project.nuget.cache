@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lxL/yEK3C0m3w7/cUGzlJ6o7c2OOVwt/YjigGPaJgKUtZ6OAPSPWFzlUlC5/BCuQh6IK11swocJw3zzzh80c4g==",
+  "dgSpecHash": "voJH/yipcFXsw8YuSWSqdjNlrj8+fnt1GwaZDiQfvos05atNpTtt/WV6M6HRUOlcZjkQvbInk+Grnfc53M0PKg==",
   "success": true,
-  "projectFilePath": "X:\\programing\\visual studio code\\gui-lib\\ui-lib.csproj",
+  "projectFilePath": "X:\\programing\\visual studio code\\ui-lib\\ui-lib.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jonah\\.nuget\\packages\\raylib-cs\\4.0.0.1\\raylib-cs.4.0.0.1.nupkg.sha512",
     "C:\\Users\\jonah\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"

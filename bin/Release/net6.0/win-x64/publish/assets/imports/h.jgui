@@ -1,0 +1,24 @@
+@setvar h1 {
+    background-col: #00000000;
+    foreground-col: #abcdef;
+    border-col: #00000000;
+    rect: (0,10,1,60);
+    parent: $screen;
+    text: "header1";
+    font-size: 60;
+    text-align: mc;
+    anchor: tc;
+    font: firacode-bold;
+};
+@setvar h2 {
+    background-col: #00000000;
+    foreground-col: #ff5555;
+    border-col: #00000000;
+    rect: (0,70,1,40);
+    parent: $screen;
+    text: "header2";
+    font-size: 40;
+    text-align: mc;
+    anchor: tc;
+    font: firacode-light;
+};

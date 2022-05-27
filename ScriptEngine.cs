@@ -42,7 +42,7 @@ namespace GUI_Lib
         
         public static Dictionary<string, string> Variables = new Dictionary<string, string>();
         public static Dictionary<string, StyleContainer> Styles = new Dictionary<string, StyleContainer>();
-        public static List<Font> Fonts = new List<Font>();
+        public static Dictionary<string, Font> Fonts = new Dictionary<string, Font>();
         public static Color BGCol = Color.WHITE;
         static char cmdPrefix = '@';
         static char varPrefix = '$';
@@ -50,16 +50,10 @@ namespace GUI_Lib
 
         public static string Path = "";
         public static List<string> FromatedCode = new List<string>();
-        public static void Start(string path, string[] fontPaths)
+        public static void LoadStyle(string path)
         {
             Styles.Clear();
             Variables.Clear();
-            /* fonts */
-            for (int i = 0; i < fontPaths.Length; i++)
-            {
-                Fonts.Add(Raylib.LoadFont(fontPaths[i]));
-                Raylib.SetTextureFilter(Fonts[i].texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
-            }
             // formating the code into one statement per line
             Path = path;
             string colapsedCode = string.Join("",File.ReadAllLines(path));
@@ -226,17 +220,18 @@ namespace GUI_Lib
 
             Variables = nv;
         }
-        public static string GetVariable(string key)
-        {
+        public static string GetVariable(string key) {
             var I = Variables;
             return Variables[key.Remove(0,1)];
         }
 
 
-        public static string[] formatCode(string src)
-        {
+        public static string[] formatCode(string[] src) {
+            return formatCode(string.Join("", src));
+        }
+        public static string[] formatCode(string src) {
             return Regex
-                .Split(src, @"(?<!\^);(?![^\{\}]*\})")
+                .Split(Regex.Replace(src, @"\/\*.*?\*\/", ""), @"(?<!\^);(?![^\{\}]*\})")
                 .Where(l => l.Length>0)
                 .Select(l => l =
                     (l[0]==cmdPrefix
@@ -245,34 +240,65 @@ namespace GUI_Lib
                     ).Replace("^;", ";")
             ).ToArray();
         }
+        public static Font LoadFont(string path, int targetFontSize = 64)
+        {
+            Font ret;
+            int[] arr = new int[1600];
+            for (int i=0; i < arr.Length; i++) arr[i] = i;
+            ret = Raylib.LoadFontEx(path, targetFontSize, arr, arr.Length);
+            Raylib.SetTextureFilter(ret.texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
+            return ret;
+        }
         public static void ParseStyle()
         {
             Styles.Clear();
             Variables.Clear();
             AddCols();
+            var IU = FromatedCode;
             // creating variables
             for (int i = 0; i < FromatedCode.Count; i++)
             {
                 string line = FromatedCode[i];
                 if (line[0] == cmdPrefix)
                 {
-                    string[] args = line.Remove(0,1).Split(" ", 3);
-                    if (args.Length >= 2 && args[0] == "import")
+                    string[] cmd = line.Remove(0,1).Split(" ", 2);
+
+                    if (cmd[0] == "importscript")
                     {
-                        string[] import = formatCode(string.Join("",File.ReadAllLines(Directory.GetParent(Path) + args[1]))).Select(l => l = Regex.Replace(l, "{|}", "")).ToArray();
+                        string[] importedCode = formatCode(File.ReadAllLines(cmd[1]));
                         
                         FromatedCode.RemoveAt(i);
-                        for (int imp = 0; imp < import.Length; imp++)
+                        for (int l = 0; l < importedCode.Length; l++)
                         {
-                            FromatedCode.Insert(i+imp, import[imp]);
+                            FromatedCode.Insert(i+l, importedCode[l]);
                         }
-                        args = FromatedCode[i].Remove(0,1).Split(" ", 3);
+                        cmd = FromatedCode[i].Remove(0,1).Split(" ", 2);
                     }
-                    if (args.Length >= 3 && args[0] == "setvar")
-                        Variables.Add(args[1], Regex.Replace(args[2], spaceMatch, "$1"));
-                    if (args.Length >= 2 && args[0] == "setbackground") BGCol = GUITools.HexToRGB(args[1]);
+                    if (cmd[0] == "setvar")
+                    {
+                        string[] args = cmd[1].Split(" ", 2);
+                        string[] fmt = formatCode(args[1]);
+                        if (args.Length < 2) continue;
+                        Variables.TryAdd(args[0], Regex.Replace(args[1], spaceMatch, "$1"));
+                        var V = Variables;
+                    }
+                    if (cmd[0] == "setbackground")
+                    {
+                        BGCol = GUITools.HexToRGB(cmd[1]);
+                    }
+                    if (cmd[0] == "importfont")
+                    {
+                        string[] args = cmd[1].Split(" ", 2);
+                        string name = System.IO.Path
+                            .GetFileName(args[1])
+                            .Replace(' ',  '-')
+                            .Replace(".ttf", "")
+                            .ToLower();
+                        if (!Fonts.ContainsKey(name)) Fonts.Add(name, LoadFont(args[1], (int)GUITools.Eval(args[0])));
+                    }
                 }
             }
+            var f = Fonts;
             // replacing varibale refrences in variables with real values
             while (Variables.Where(v => v.Value.Contains(varPrefix)).Count() > 0)
                 foreach (var item in Variables)
@@ -323,7 +349,7 @@ namespace GUI_Lib
                         case "text":         style.text        = v[1].Replace("\"", "");        continue;
                         case "text-align":   style.textAlign   = GUITools.StringToAnchor(v[1]); continue;
 
-                        case "font":         style.font        = GetFont(v[1]);              continue;
+                        case "font":         style.font        = Fonts[v[1]];              continue;
                         case "font-size":    style.fontSize    = GUITools.Eval(v[1]);        continue;
                         case "font-spacing": style.fontSpacing = GUITools.Eval(v[1]);        continue;
                         //case "font":         style.font        = GUITools.StringToAnchor(v[1]); continue;
@@ -335,13 +361,9 @@ namespace GUI_Lib
         }
         public static Font GetFont(string f)
         {
-            switch (f)
-            {
-                case "default": case "raylib": return Raylib.GetFontDefault();
-                case "bad": case "handwriting": return Fonts[0];
-                case "ubuntu-mono": return Fonts[1];
-                default: return Raylib.GetFontDefault();
-            }
+            Font F;
+            if (Fonts.TryGetValue(f, out F) == false) F = Raylib.GetFontDefault();
+            return F;
         }
     }
 }

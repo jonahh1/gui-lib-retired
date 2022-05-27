@@ -124,11 +124,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "X:\\programing\\visual studio code\\gui-lib\\ui-lib.csproj",
+      "projectUniqueName": "X:\\programing\\visual studio code\\ui-lib\\ui-lib.csproj",
       "projectName": "ui-lib",
-      "projectPath": "X:\\programing\\visual studio code\\gui-lib\\ui-lib.csproj",
+      "projectPath": "X:\\programing\\visual studio code\\ui-lib\\ui-lib.csproj",
       "packagesPath": "C:\\Users\\jonah\\.nuget\\packages\\",
-      "outputPath": "X:\\programing\\visual studio code\\gui-lib\\obj\\",
+      "outputPath": "X:\\programing\\visual studio code\\ui-lib\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\jonah\\AppData\\Roaming\\NuGet\\NuGet.Config",

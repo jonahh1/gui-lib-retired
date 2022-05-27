@@ -25,7 +25,6 @@ namespace GUI_Lib
             Draw.Text(text, rect.x, rect.y, c, font, fontSize, fontSpacing);
         }
 
-
         #region styled functions
         public static void GUIRect(string name)
         {

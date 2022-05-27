@@ -63,15 +63,15 @@ namespace GUI_Lib
         {
             switch (val)
             {
-                case"top-center":case"top_center":case "tc": return AnchorType.top_center;
+                case"top-centre":case"top_centre":case "tc": return AnchorType.top_center;
                 case"top-right":case"top_right":case "tr": return AnchorType.top_right;
                 
                 case"middle-left":case"middle_left":case "ml": return AnchorType.middle_left;
-                case"middle-center":case"middle_center":case "mc": return AnchorType.middle_center;
+                case"middle-centre":case"middle_centre":case "mc": return AnchorType.middle_center;
                 case"middle-right":case"middle_right":case "mr": return AnchorType.middle_right;
 
                 case"bottom-left":case"bottom_left":case "bl": return AnchorType.bottom_left;
-                case"bottom-center":case"bottom_center":case "bc": return AnchorType.bottom_center;
+                case"bottom-centre":case"bottom_centre":case "bc": return AnchorType.bottom_center;
                 case"bottom-right":case"bottom_right":case "br": return AnchorType.bottom_right;
                 default: return AnchorType.top_left;
             }
@@ -83,8 +83,11 @@ namespace GUI_Lib
             for (int i = 0; i < strValues.Length; i++)
             {
                 string v = strValues[i];
-                if (v == "sw") v = Raylib.GetScreenWidth().ToString();
-                if (v == "sh") v = Raylib.GetScreenHeight().ToString();
+                v= v.Replace("sw", Raylib.GetScreenWidth().ToString())
+                    .Replace("sh", Raylib.GetScreenHeight().ToString())
+                    .Replace("mx", Raylib.GetMouseX().ToString())
+                    .Replace("my", Raylib.GetMouseY().ToString());
+                
                 values[i] = Eval(v);
             }
             if (values.Length!=4) return new Rectangle(10,10,100, 100);

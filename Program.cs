@@ -10,20 +10,8 @@ drawing each frame:
 */
 Raylib.SetExitKey(0);
 Raylib.SetTargetFPS(60);
-ScriptEngine.Start("assets/test.jgui", new string[]{"assets/bad-font.ttf", "assets/test-font.ttf"});
+ScriptEngine.LoadStyle("assets/test.jgui");
 
-double Evaluate(string expression)
-{
-    return (double)new System.Xml.XPath.XPathDocument
-    (new StringReader("<r/>")).CreateNavigator().Evaluate
-    (string.Format("number({0})", new
-    System.Text.RegularExpressions.Regex(@"([\+\-\*])")
-    .Replace(expression, " ${1} ")
-    .Replace("/", " div ")
-    .Replace("%", " mod ")));
-}
-
-Console.WriteLine(Evaluate("500/2"));
 
 while (!Raylib.WindowShouldClose())
 {
@@ -38,4 +26,4 @@ while (!Raylib.WindowShouldClose())
     Raylib.EndDrawing();
 }
 Raylib.CloseWindow();
-foreach (Font f in ScriptEngine.Fonts) Raylib.UnloadFont(f);
+foreach (var f in ScriptEngine.Fonts) Raylib.UnloadFont(f.Value);
