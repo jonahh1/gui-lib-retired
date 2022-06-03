@@ -1,6 +1,10 @@
 namespace GUI_Lib
 {
-    public class StyleContainer {
+    public struct Function {
+        public MethodInfo function;
+        public string[] args;
+    }
+    public class StaticStyle {
         public Color backgroundCol;
         public Color foregroundCol;
         
@@ -17,7 +21,9 @@ namespace GUI_Lib
         public float fontSpacing; public void SetFontSpacing(float v) {fontSpacing = v; Console.WriteLine(fontSpacing);}
         public Font font;
 
-        public StyleContainer()
+        public List<MethodInfo> functions = new List<MethodInfo>();
+
+        public StaticStyle()
         {
             backgroundCol = Color.GRAY;
             foregroundCol = Color.BLACK;
@@ -32,35 +38,62 @@ namespace GUI_Lib
             text = "";
             textAlign = AnchorType.middle_center;
             fontSize = 20;
-            fontSpacing = 1;
+            fontSpacing = 0;
             font = Raylib.GetFontDefault();
 
+        }
+    }
+    public class DynamicStyle {
+        public StaticStyle baseStyle;
+        public Dictionary<string, StaticStyle> styles;
+        public DynamicStyle(StaticStyle baseStyle, Dictionary<string, StaticStyle> styles) {
+            this.baseStyle = baseStyle;
+            this.styles = styles;
+        }
+
+        public bool IsMouseHovering() {
+            StaticStyle s = styles.First().Value;
+            return IsMouseHovering(GUITools.ModRectFromParentAndAnchor(s.parent, s.anchor, s.rect));
+        }
+        public bool IsMouseHovering(Rectangle overide) {
+            return Raylib.CheckCollisionPointRec(Raylib.GetMousePosition(), overide);
+        }
+
+        public bool IsMousePressed(MouseButton mb = MouseButton.MOUSE_BUTTON_LEFT){
+            return IsMouseHovering() && Raylib.IsMouseButtonPressed(mb);
+        }
+        public bool IsMouseDown(MouseButton mb = MouseButton.MOUSE_BUTTON_LEFT){
+            return IsMouseHovering() && Raylib.IsMouseButtonDown(mb);
+        }
+        public bool IsMouseReleased(MouseButton mb = MouseButton.MOUSE_BUTTON_LEFT){
+            return IsMouseHovering() && Raylib.IsMouseButtonReleased(mb);
+        }
+
+        public bool IsMousePressed(Rectangle overide, MouseButton mb = MouseButton.MOUSE_BUTTON_LEFT){
+            return IsMouseHovering(overide) && Raylib.IsMouseButtonPressed(mb);
+        }
+        public bool IsMouseDown(Rectangle overide, MouseButton mb = MouseButton.MOUSE_BUTTON_LEFT){
+            return IsMouseHovering(overide) && Raylib.IsMouseButtonDown(mb);
+        }
+        public bool IsMouseReleased(Rectangle overide, MouseButton mb = MouseButton.MOUSE_BUTTON_LEFT){
+            return IsMouseHovering(overide) && Raylib.IsMouseButtonReleased(mb);
         }
     }
     public static class ScriptEngine
     {
         
         public static Dictionary<string, string> Variables = new Dictionary<string, string>();
-        public static Dictionary<string, StyleContainer> Styles = new Dictionary<string, StyleContainer>();
+        public static Dictionary<string, StaticStyle> StaticStyles = new Dictionary<string, StaticStyle>();
+        public static Dictionary<string, DynamicStyle> DynamicStyles = new Dictionary<string, DynamicStyle>();
         public static Dictionary<string, Font> Fonts = new Dictionary<string, Font>();
         public static Color BGCol = Color.WHITE;
+        public static string Namespace = "GUI_Lib";
         static char cmdPrefix = '@';
         static char varPrefix = '$';
         static string spaceMatch = @"(""[^""\\]*(?:\\.[^""\\]*)*"")|\s+";
 
         public static string Path = "";
         public static List<string> FromatedCode = new List<string>();
-        public static void LoadStyle(string path)
-        {
-            Styles.Clear();
-            Variables.Clear();
-            // formating the code into one statement per line
-            Path = path;
-            string colapsedCode = string.Join("",File.ReadAllLines(path));
-            FromatedCode = formatCode(colapsedCode).ToList();
-            ParseStyle();
-
-        }
 
         public static void AddCols()
         {
@@ -221,7 +254,6 @@ namespace GUI_Lib
             Variables = nv;
         }
         public static string GetVariable(string key) {
-            var I = Variables;
             return Variables[key.Remove(0,1)];
         }
 
@@ -249,12 +281,30 @@ namespace GUI_Lib
             Raylib.SetTextureFilter(ret.texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
             return ret;
         }
+        public static Font GetFont(string f)
+        {
+            Font F;
+            if (!Fonts.TryGetValue(f, out F)) F = Raylib.GetFontDefault();
+            return F;
+        }
+    
+        public static void LoadScript(string path)
+        {
+            StaticStyles.Clear();
+            Variables.Clear();
+            // formating the code into one statement per line
+            Path = path;
+            string colapsedCode = string.Join("",File.ReadAllLines(path));
+            FromatedCode = formatCode(colapsedCode).ToList();
+            ParseStyle();
+
+        }
         public static void ParseStyle()
         {
-            Styles.Clear();
+            StaticStyles.Clear();
+            DynamicStyles.Clear();
             Variables.Clear();
             AddCols();
-            var IU = FromatedCode;
             // creating variables
             for (int i = 0; i < FromatedCode.Count; i++)
             {
@@ -262,7 +312,6 @@ namespace GUI_Lib
                 if (line[0] == cmdPrefix)
                 {
                     string[] cmd = line.Remove(0,1).Split(" ", 2);
-
                     if (cmd[0] == "importscript")
                     {
                         string[] importedCode = formatCode(File.ReadAllLines(cmd[1]));
@@ -274,17 +323,21 @@ namespace GUI_Lib
                         }
                         cmd = FromatedCode[i].Remove(0,1).Split(" ", 2);
                     }
-                    if (cmd[0] == "setvar")
+                    if (cmd[0] == "setconst" || cmd[0] == "setvar")
                     {
                         string[] args = cmd[1].Split(" ", 2);
                         string[] fmt = formatCode(args[1]);
                         if (args.Length < 2) continue;
-                        Variables.TryAdd(args[0], Regex.Replace(args[1], spaceMatch, "$1"));
-                        var V = Variables;
+                        if (Variables.ContainsKey(args[0])) Variables.Add(args[0], Regex.Replace(args[1], spaceMatch, "$1"));
+                        else Variables[args[0]] = Regex.Replace(args[1], spaceMatch, "$1");
                     }
                     if (cmd[0] == "setbackground")
                     {
                         BGCol = GUITools.HexToRGB(cmd[1]);
+                    }
+                    if (cmd[0] == "setnamespace")
+                    {
+                        Namespace = cmd[1];
                     }
                     if (cmd[0] == "importfont")
                     {
@@ -298,72 +351,149 @@ namespace GUI_Lib
                     }
                 }
             }
-            var f = Fonts;
-            // replacing varibale refrences in variables with real values
-            while (Variables.Where(v => v.Value.Contains(varPrefix)).Count() > 0)
+            #region search & replace consts
+            // replacing consts refrences in variables with real values
+            while (Variables.Where(v => v.Value.Contains(varPrefix) && Variables.ContainsKey(Regex.Match(v.Value, string.Format(@"\{0}(\w)*", varPrefix)).Value.Remove(0,1))).Count() > 0)
                 foreach (var item in Variables)
                 {
                     if (!item.Value.Contains(varPrefix)) continue;
-
+/*
                     Match match = Regex.Match(item.Value, string.Format(@"\{0}(\w)*", varPrefix));
-                    Variables[item.Key] = item.Value.Replace(match.Value, GetVariable(match.Value));
+                    Variables[item.Key] = item.Value.Replace(match.Value, GetVariable(match.Value));*/
+                    
+                    MatchCollection matches = Regex.Matches(Variables[item.Key], string.Format(@"\{0}(\w)*", varPrefix));
+                    foreach (Match match in matches)
+                    {
+                        if (match.Value==null || !Variables.ContainsKey(match.Value.Remove(0,1))) continue;
+                        Variables[item.Key] = Variables[item.Key].Replace(match.Value, GetVariable(match.Value));
+                    } 
                 }
             
             // replacing varibale refrences in code with real values
-            while (FromatedCode.Where(v => v.Contains(varPrefix)).Count() > 0)
+            
+            while (FromatedCode.Where(v => v.Contains(varPrefix) && Variables.ContainsKey(Regex.Match(v, string.Format(@"\{0}(\w)*", varPrefix)).Value.Remove(0,1))).Count() > 0)
                 for (int i = 0; i < FromatedCode.Count; i++)
                 {
                     if (!FromatedCode[i].Contains(varPrefix)) continue;
 
-                    Match match = Regex.Match(FromatedCode[i], string.Format(@"\{0}(\w)*", varPrefix));
-                    FromatedCode[i] = FromatedCode[i].Replace(match.Value, GetVariable(match.Value));
+                    MatchCollection matches = Regex.Matches(FromatedCode[i], string.Format(@"\{0}(\w)*", varPrefix));
+                    foreach (Match match in matches)
+                    {
+                        if (match.Value==null || !Variables.ContainsKey(match.Value.Remove(0,1))) continue;
+                        FromatedCode[i] = FromatedCode[i].Replace(match.Value, GetVariable(match.Value));
+                    } 
                 }
-
+            #endregion
             // creating style classes from the formated code
-            foreach (string line in FromatedCode)
+            var FFF = FromatedCode;
+            foreach (string l in FromatedCode)
             {
-                if (line[0] == cmdPrefix) continue;
-
-                StyleContainer style = new StyleContainer();
+                string line = l;
+                Dictionary<string, string> localVars = new Dictionary<string, string>();
+                Variables.Concat(localVars);
+                StaticStyle style = new StaticStyle();
 
                 string[] splitLine = Regex.Split(line, @"{|;|}").Where(l=>l.Length>0).ToArray();
                 if (splitLine.Length < 2) continue;
+                
+            
+                // replacing varibale refrences in code with real values
 
                 for (int i = 1; i < splitLine.Length; i++)
                 {
                     string[] v = splitLine[i].Replace(";","").Split(":");
                     if (v.Length != 2) continue;
-                    
+
                     switch (v[0].ToLower())
                     {
                         case "background-col": style.backgroundCol = GUITools.HexToRGB(v[1]); continue;
                         case "foreground-col": style.foregroundCol = GUITools.HexToRGB(v[1]); continue;
 
                         case "border-col":   style.borderCol   = GUITools.HexToRGB(v[1]); continue;
-                        case "border-width": style.borderWidth = GUITools.Eval(v[1]);  continue;
+                        case "border-width": style.borderWidth = GUITools.Eval(v[1]);     continue;
 
                         case "rect":   style.rect   = GUITools.StringToRect(v[1]);   continue;
                         case "parent": style.parent = GUITools.StringToRect(v[1]);   continue;
                         case "anchor": style.anchor = GUITools.StringToAnchor(v[1]); continue;
 
-                        case "text":         style.text        = v[1].Replace("\"", "");        continue;
+                        case "text":         style.text        = GUITools.StringToString(v[1]); continue;
                         case "text-align":   style.textAlign   = GUITools.StringToAnchor(v[1]); continue;
 
-                        case "font":         style.font        = Fonts[v[1]];              continue;
-                        case "font-size":    style.fontSize    = GUITools.Eval(v[1]);        continue;
-                        case "font-spacing": style.fontSpacing = GUITools.Eval(v[1]);        continue;
-                        //case "font":         style.font        = GUITools.StringToAnchor(v[1]); continue;
+                        case "font":         style.font        = GetFont(v[1]);       continue;
+                        case "font-size":    style.fontSize    = GUITools.Eval(v[1]); continue;
+                        case "font-spacing": style.fontSpacing = GUITools.Eval(v[1]); continue;
+
+                        case "call-cs":
+                            string[] total = v[1].Split(".");
+                            string _namespace = "";
+                            string _class     = "";
+                            string _func      = "";
+                            if (total.Length == 2)
+                            {
+                                _namespace = Namespace;
+                                _class = total[0];
+                                _func = total[1];
+                            }
+                            if (total.Length == 3)
+                            {
+                                _namespace = total[0];
+                                _class = total[1];
+                                _func = total[2];
+                            }
+                            if (_func.Contains("("))
+                            {
+                                string[] function = 
+                                {
+                                    Regex.Replace(_func, @"\(.*?\)", ""),
+                                    Regex.Replace(Regex.Match(_func, @"\(.*?\)").Value, @"\(|\)", "")
+                                };
+
+
+                            }
+                            else style.functions.Add(Type.GetType(_namespace+"."+_class).GetMethod(_func));
+                            continue;
+
+                        case "var":
+                            string[] nv = v[1].Split("=");
+                            localVars.Add(nv[0], nv[1]);
+                            Variables.Add(nv[0], nv[1]);
+                            
+                            string matchString = @"\"+varPrefix+@"\b"+nv[0]+@"\b";
+                            while (splitLine.Where(v => Regex.IsMatch(v, matchString)).Count() > 0)
+                            {
+                                for (int a = i; a < splitLine.Length; a++)
+                                {
+                                    if (!Regex.IsMatch(splitLine[a], matchString)) continue;
+
+                                    Match match = Regex.Match(splitLine[a], matchString);
+                                    splitLine[a] = Regex.Replace(splitLine[a], matchString, GetVariable(varPrefix+nv[0])); //splitLine[a].Replace(varPrefix+nv[0], GetVariable(varPrefix+nv[0]));
+                                }
+                            }
+                            continue;
                         default: continue;
                     }
                 }
-                if (!Styles.ContainsKey(splitLine[0])) Styles.Add(splitLine[0], style);
+                if (!StaticStyles.ContainsKey(splitLine[0]) && !splitLine[0].Contains(cmdPrefix)) StaticStyles.Add(splitLine[0], style);
+                foreach (var v in localVars) Variables.Remove(v.Key);
+                localVars.Clear();
             }
-        }
-        public static Font GetFont(string f)
-        {
-            Font F;
-            if (Fonts.TryGetValue(f, out F) == false) F = Raylib.GetFontDefault();
-            return F;
+            Dictionary<string, List<string>> ns = new Dictionary<string, List<string>>(); // new styles
+            foreach (var s in StaticStyles)
+            {
+                if (!s.Key.Contains(":")) ns.Add(s.Key, new List<string>());
+                else 
+                {
+                    string[] options = s.Key.Split(":", 2);
+                    if (ns.ContainsKey(options[0])) ns[options[0]].Add(options[1]);
+                }
+            }
+
+            foreach (var s in ns)
+            {
+                DynamicStyles.Add(s.Key, new DynamicStyle(StaticStyles[s.Key], new Dictionary<string, StaticStyle>()));
+                foreach (var i in s.Value) DynamicStyles[s.Key].styles.Add(i, StaticStyles[s.Key+":"+i]);
+            }
+            var CS = DynamicStyles;
         }
     }
 }

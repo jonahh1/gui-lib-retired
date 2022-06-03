@@ -1,4 +1,5 @@
-﻿Raylib.SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
+﻿using System.Reflection;
+Raylib.SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
 Raylib.InitWindow(800, 450, "UI Lib");
 /*
 drawing each frame:
@@ -8,19 +9,24 @@ drawing each frame:
 4000:  ~80
 40000: ~9
 */
+/*
+string methodName = "NextDouble";
+Random rand = new Random();
+System.Reflection.MethodInfo info =
+rand.GetType().GetMethod(methodName);
+double r = (double) info.Invoke(rand, null);*/
 Raylib.SetExitKey(0);
-Raylib.SetTargetFPS(60);
-ScriptEngine.LoadStyle("assets/test.jgui");
-
-
+//Raylib.SetTargetFPS(60);
+ScriptEngine.LoadScript("assets/test.jgui");
 while (!Raylib.WindowShouldClose())
 {
     Raylib.BeginDrawing();
     Raylib.ClearBackground(ScriptEngine.BGCol);
     ScriptEngine.ParseStyle();
-    foreach (var item in ScriptEngine.Styles)
+    
+    foreach (var item in ScriptEngine.DynamicStyles)
     {
-        Draw.GUIRect(item.Key);
+        Draw.DynamicGUIElement(item.Value);
     }
     Raylib.DrawFPS(10,10);
     Raylib.EndDrawing();

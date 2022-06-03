@@ -9,18 +9,18 @@
 @importscript assets/imports/p.jgui;
 
 
-@setvar menubarHeight 25;
-@setvar bg $clear;
-@setvar fg $white;
-@setvar screen (0,25,sw,sh-$menubarHeight);
-@setvar bounds (0,0,200,75);
-@setvar defaultText {
+@setconst menubarHeight 25;
+@setconst bg $clear;
+@setconst fg $white;
+@setconst screen [0,25,sw,sh-$menubarHeight];
+@setconst bounds [0,0,200,75];
+@setconst defaultText {
     font: firacode-regular;
     font-size: 16;
     font-spacing: 0;
     text-align: mc;
 };
-@setvar rect {
+@setconst rect {
     background-col: $bg;
     foreground-col: $fg;
     border-col: $fg;
@@ -30,15 +30,17 @@
 };
 
 @setbackground #181818;
+@setnamespace JGUI;
 
 box {
+    var: h = 50;
     $rect;
-    rect: (
+    rect: [
         0,
         0,
         128,
-        32
-    );
+        $h - 18 /* 32 */
+    ];
     anchor: middle-centre;
     text: "hello world";
 };
@@ -47,7 +49,7 @@ h1 {
     background-col: #00000000;
     foreground-col: #abcdef;
     border-col: #00000000;
-    rect: (0,10,1,60);
+    rect: [0,10,strwidth("heading1",60,firacode-bold),60];
     parent: $screen;
     text: "heading1";
     font-size: 60;
@@ -55,23 +57,42 @@ h1 {
     anchor: tc;
     font: firacode-bold;
 };
-h2 {
-    background-col: #00000000;
+
+@setvar h2Blueprint {
+    var: text = "heading2";
+    var: textSize = 40;
+    var: spacing = 20;
+    background-col: #ffff0050;
+    border-col:     #00000000;
     foreground-col: #ff5555;
-    border-col: #00000000;
-    rect: (0,70,1,40);
+    var: strW = strwidth($text,$textSize,firacode-bold, $spacing);
+    rect: [0,70,$strW + 2.5, 50];
     parent: $screen;
-    text: "heading2";
-    font-size: 40;
+    text: $text;
+    font-size: $textSize;
     text-align: mc;
+    font-spacing: $spacing;
     anchor: tc;
     font: firacode-bold;
+};
+h2 {
+    $h2Blueprint;
+};
+h2:hover {
+    $h2Blueprint;
+    border-col: #ffff00;
+};
+h2 : leftclick {
+    $h2Blueprint;
+    background-col: #ffff00;
+    border-col: #ffffff;
+    call-cs: Logic.PrintHello(arg1);
 };
 
 menubar {
     border-col: $bg;
     background-col: #363636;
-    rect: (0,0,sw,$menubarHeight);
-    parent: (0,0,sw,sh);
+    rect: [0,0,sw,$menubarHeight];
+    parent: [0,0,sw,sh];
     anchor: tl; 
 };

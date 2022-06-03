@@ -76,25 +76,43 @@ namespace GUI_Lib
                 default: return AnchorType.top_left;
             }
         }
+        public static string StringToString(string val)
+        {
+            return val.Replace("\"", "");
+        }
         public static Rectangle StringToRect(string val)
         {
-            string[] strValues = Regex.Replace(val,@"\(|\)","").Split(",").ToArray();
+            string[] strValues = Regex.Split(Regex.Replace(val, @"\[|\]", ""), @"\,(?![^\(]*\))").ToArray();
+            
             float[] values = new float[4]; //Array.ConvertAll(i, float.Parse);
             for (int i = 0; i < strValues.Length; i++)
             {
                 string v = strValues[i];
-                v= v.Replace("sw", Raylib.GetScreenWidth().ToString())
-                    .Replace("sh", Raylib.GetScreenHeight().ToString())
-                    .Replace("mx", Raylib.GetMouseX().ToString())
-                    .Replace("my", Raylib.GetMouseY().ToString());
-                
                 values[i] = Eval(v);
             }
             if (values.Length!=4) return new Rectangle(10,10,100, 100);
             return new Rectangle(values[0],values[1],values[2],values[3]);
         }
-        public static float Eval(string expression)
+        public static float Eval(string e)
         {
+            string expression = e
+                .Replace("sw", Raylib.GetScreenWidth().ToString())
+                .Replace("sh", Raylib.GetScreenHeight().ToString())
+                .Replace("mx", Raylib.GetMouseX().ToString())
+                .Replace("my", Raylib.GetMouseY().ToString());
+            
+            string w = @"strwidth\(.*?\)"; Match strwidthMatch = Regex.Match(expression, w);
+            string h = @"strheight\(.*?\)"; Match strheightMatch = Regex.Match(expression, h);
+            if (strwidthMatch.Success)
+            {
+                string[] args = Regex.Replace(expression, @"strwidth\(","").Split(",");
+                expression = Regex.Replace(expression, w, strSizeFunc(args).X.ToString());
+            }
+            else if (strheightMatch.Success)
+            {
+                string[] args = Regex.Replace(expression, @"strheight\(","").Split(",");
+                expression = Regex.Replace(expression, h, strSizeFunc(args).Y.ToString());
+            }
             return (float)(double)new System.Xml.XPath.XPathDocument
             (new StringReader("<r/>")).CreateNavigator().Evaluate
             (string.Format("number({0})", new
@@ -103,7 +121,18 @@ namespace GUI_Lib
             .Replace("/", " div ")
             .Replace("%", " mod ")));
         }
-
+        public static Vector2 strSizeFunc(string[] args)
+        {
+            //args[args.Length-1] = args[args.Length-1].Remove(args[args.Length-1].Length-1, 1);
+            args = args.Select(a => a = a.Replace(")", "")).ToArray();
+            //string[] args = Regex.Replace(expression, @"strlen\(|\)","").Split(",");
+            if (args.Length<3 || args.Length>4) return Vector2.One;
+            float spacing = args.Length==3?0:Eval(args[3]);
+            string str = StringToString(args[0]);
+            int size = (int)Eval(args[1]);
+            Font font = ScriptEngine.GetFont(args[2]);
+            return Raylib.MeasureTextEx(font, str, size, spacing);//.X.ToString();
+        }
         
         public static Rectangle ModRectFromParentAndAnchor(Rectangle parent, AnchorType anchor, Rectangle rect)
         {
@@ -153,6 +182,10 @@ namespace GUI_Lib
                 default: x = parent.x; y = parent.y; break;
             }
             return new Rectangle(x + rect.x, y + rect.y, rect.width, rect.height);
+        }
+        public static void GOOP()
+        {
+            Console.WriteLine("you've been gooped");
         }
     }
 }

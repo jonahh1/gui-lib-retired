@@ -26,10 +26,13 @@ namespace GUI_Lib
         }
 
         #region styled functions
-        public static void GUIRect(string name)
+        public static void StaticGUIElement(string name)
         {
-            if (!ScriptEngine.Styles.ContainsKey(name)) return;
-            StyleContainer s = ScriptEngine.Styles[name]; // style
+            if (!ScriptEngine.StaticStyles.ContainsKey(name)) return;
+            StaticGUIElement(ScriptEngine.StaticStyles[name]);
+        }
+        public static void StaticGUIElement(StaticStyle s)
+        {
             Raylib.DrawRectangleRec(GUITools.ModRectFromParentAndAnchor(s.parent, s.anchor, s.rect), s.backgroundCol);
             Raylib.DrawRectangleLinesEx(GUITools.ModRectFromParentAndAnchor(s.parent, s.anchor, s.rect), s.borderWidth, s.borderCol);
 
@@ -40,6 +43,70 @@ namespace GUI_Lib
                 rect = GUITools.AddRects(rect, GUITools.ModRectFromParentAndAnchor(s.parent, s.anchor, new Rectangle(0,0,s.rect.width,s.rect.height)));
                 Draw.Text(s.text, rect.x, rect.y, s.foregroundCol, s.font, s.fontSize, s.fontSpacing);
             }
+            foreach (MethodInfo func in s.functions)
+            {
+                func.Invoke(null,null);
+            }
+        }
+        public static void DynamicGUIElement(DynamicStyle s) // s = style
+        {
+            if (s.styles.Count>0)
+            {
+                if (s.IsMousePressed(MouseButton.MOUSE_BUTTON_LEFT))
+                {
+                    var styles = s.styles.Where(ss=>ss.Key.Contains("leftclick")).ToList();
+                    if (styles.Count() > 0)
+                    {
+                        StaticGUIElement(styles.First().Value);
+                        return;
+                    }
+                    else goto defaultStyle;
+                }
+                else if (s.IsMouseDown(MouseButton.MOUSE_BUTTON_LEFT))
+                {
+                    var styles = s.styles.Where(ss=>ss.Key.Contains("lefthold")).ToList();
+                    if (styles.Count() > 0)
+                    {
+                        StaticGUIElement(styles.First().Value);
+                        return;
+                    }
+                    else goto defaultStyle;
+                }
+                else if (s.IsMousePressed(MouseButton.MOUSE_BUTTON_RIGHT))
+                {
+                    var styles = s.styles.Where(ss=>ss.Key.Contains("rightclick")).ToList();
+                    if (styles.Count() > 0)
+                    {
+                        StaticGUIElement(styles.First().Value);
+                        return;
+                    }
+                    else goto defaultStyle;
+                }
+                else if (s.IsMouseDown(MouseButton.MOUSE_BUTTON_RIGHT))
+                {
+                    var styles = s.styles.Where(ss=>ss.Key.Contains("righthold")).ToList();
+                    if (styles.Count() > 0)
+                    {
+                        StaticGUIElement(styles.First().Value);
+                        return;
+                    }
+                    else goto defaultStyle;
+                }
+                else if (s.IsMouseHovering())
+                {
+                    var styles = s.styles.Where(ss=>ss.Key.Contains("hover")).ToList();
+                    if (styles.Count() > 0)
+                    {
+                        StaticGUIElement(styles.First().Value);
+                        return;
+                    }
+                    else goto defaultStyle;
+                }
+                else goto defaultStyle;
+            }
+            
+            defaultStyle:
+            StaticGUIElement(s.baseStyle);
         }
         #endregion
     }
