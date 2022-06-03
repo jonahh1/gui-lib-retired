@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "voJH/yipcFXsw8YuSWSqdjNlrj8+fnt1GwaZDiQfvos05atNpTtt/WV6M6HRUOlcZjkQvbInk+Grnfc53M0PKg==",
+  "dgSpecHash": "E/dR92gguTgokcdm1fU3DcTvSEdXI9jxu3VU8ctNZslzbpEC2A4ktNib9vpB/lY0g4hTi1iLcxLYVt1Fu2/T5Q==",
   "success": true,
   "projectFilePath": "X:\\programing\\visual studio code\\ui-lib\\ui-lib.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jonah\\.nuget\\packages\\raylib-cs\\4.0.0.1\\raylib-cs.4.0.0.1.nupkg.sha512",
-    "C:\\Users\\jonah\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
+    "C:\\Users\\jonah\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\jonah\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\6.0.2\\microsoft.netcore.app.runtime.win-x64.6.0.2.nupkg.sha512",
+    "C:\\Users\\jonah\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\6.0.2\\microsoft.windowsdesktop.app.runtime.win-x64.6.0.2.nupkg.sha512",
+    "C:\\Users\\jonah\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\6.0.2\\microsoft.aspnetcore.app.runtime.win-x64.6.0.2.nupkg.sha512"
   ],
   "logs": []
 }
-
